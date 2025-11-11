@@ -20,28 +20,29 @@ wss.on("connection", (ws) => {
     switch (messageObject.method) {
       case "createSession":
         console.log("createSession: ", messageObject.id);
-        const sessionCreatedResp = {
+
+        let res = {
+          method: "createSession",
+          id: "AJMN0003S20251029140155082",
+          jsonrpc: "2.0",
+          result: true,
+        };
+        setTimeout(() => {
+          console.log("Sending createSession response");
+          ws.send(JSON.stringify(res));
+        }, 1000);
+
+        res = {
           method: "session_created",
           jsonrpc: "2.0",
           result: true,
-          params: {
-            session_id: sessionId++,
-          },
+          params: { session_id: sessionId++ },
         };
 
         setTimeout(() => {
-          ws.send(JSON.stringify(sessionCreatedResp));
+          console.log("Sending session_created response");
+          ws.send(JSON.stringify(res));
         }, 2000);
-
-        const assistanceEndedResp = {
-          method: "assistanceended",
-          jsonrpc: "2.0",
-          result: true,
-        };
-
-        setTimeout(() => {
-          ws.send(JSON.stringify(assistanceEndedResp));
-        }, 8000);
 
         break;
       case "closeSession":
@@ -49,6 +50,31 @@ wss.on("connection", (ws) => {
         break;
       case "setSessionData":
         console.log("setSessionData: ", messageObject.id);
+        let resp = {
+          method: "setSessionData",
+          id: "AJMN130120251105111722807",
+          jsonrpc: "2.0",
+          params: {
+            Language: "en",
+            ignore_cim: null,
+            current_session: { ndc: {}, extra: [], selected_transaction: {} },
+          },
+        };
+        setTimeout(() => {
+          console.log("Sending setSessionData response");
+          ws.send(JSON.stringify(resp));
+        }, 2000);
+
+        resp = {
+          method: "assistanceended",
+          jsonrpc: "2.0",
+          result: true,
+        };
+        setTimeout(() => {
+          console.log("Sending assistanceended response");
+          ws.send(JSON.stringify(resp));
+        }, 4000);
+
         break;
       case "runFlow":
         console.log("runFlow: ", messageObject.params?.flow);
